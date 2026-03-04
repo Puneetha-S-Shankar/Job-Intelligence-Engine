@@ -7,24 +7,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --ink: #0d0d0d;
-      --paper: #f5f3ee;
-      --accent: #0a5cf5;
-      --accent2: #ff4b2b;
-      --muted: #7a7870;
-      --border: #d8d5cc;
-      --card: #ffffff;
-      --radius: 6px;
+      --ink: #0d0d0d; --paper: #f5f3ee; --accent: #0a5cf5; --accent2: #ff4b2b;
+      --muted: #7a7870; --border: #d8d5cc; --card: #ffffff; --radius: 6px;
       --mono: "SF Mono", "Fira Code", monospace;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: "DM Sans", sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; }
 
-    header {
-      background: var(--ink); padding: 0 2.5rem; height: 58px;
-      display: flex; align-items: center; justify-content: space-between;
-      position: sticky; top: 0; z-index: 200;
-    }
+    header { background: var(--ink); padding: 0 2.5rem; height: 58px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 200; }
     .logo { font-family: "Syne", sans-serif; font-weight: 800; font-size: 1.1rem; color: #fff; letter-spacing: 0.02em; display: flex; align-items: center; gap: 8px; }
     .logo-dot { width: 8px; height: 8px; background: var(--accent2); border-radius: 50%; display: inline-block; animation: pulse 2s infinite; }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
@@ -39,33 +29,17 @@
     .field-label { font-size: 0.7rem; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 5px; margin-top: 1rem; }
     .field-label:first-of-type { margin-top: 0; }
 
-    input[type="text"], select, textarea {
-      width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--border);
-      border-radius: var(--radius); font-family: "DM Sans", sans-serif;
-      font-size: 0.88rem; background: #fafaf8; color: var(--ink);
-      transition: border-color 0.15s; outline: none;
-    }
+    input[type="text"], select, textarea { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: var(--radius); font-family: "DM Sans", sans-serif; font-size: 0.88rem; background: #fafaf8; color: var(--ink); transition: border-color 0.15s; outline: none; }
     input:focus, select:focus, textarea:focus { border-color: var(--accent); background: #fff; }
     textarea { resize: vertical; min-height: 72px; font-size: 0.82rem; }
 
-    .file-upload-label {
-      display: flex; align-items: center; gap: 8px; padding: 0.55rem 0.75rem;
-      border: 1px dashed var(--border); border-radius: var(--radius);
-      cursor: pointer; font-size: 0.85rem; color: var(--muted);
-      transition: border-color 0.15s, color 0.15s; background: #fafaf8;
-    }
+    .file-upload-label { display: flex; align-items: center; gap: 8px; padding: 0.55rem 0.75rem; border: 1px dashed var(--border); border-radius: var(--radius); cursor: pointer; font-size: 0.85rem; color: var(--muted); transition: border-color 0.15s, color 0.15s; background: #fafaf8; }
     .file-upload-label:hover { border-color: var(--accent); color: var(--accent); }
     #companyFile { display: none; }
     .file-badge { display: none; font-size: 0.75rem; background: #e7f3ff; color: var(--accent); padding: 2px 8px; border-radius: 20px; margin-top: 4px; }
     .divider { height: 1px; background: var(--border); margin: 1.25rem 0; }
 
-    .btn-search {
-      width: 100%; margin-top: 0.25rem; padding: 0.7rem 1rem;
-      background: var(--ink); color: #fff; border: none; border-radius: var(--radius);
-      font-family: "Syne", sans-serif; font-weight: 700; font-size: 0.95rem;
-      cursor: pointer; transition: background 0.2s, transform 0.1s; letter-spacing: 0.03em;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-    }
+    .btn-search { width: 100%; margin-top: 0.25rem; padding: 0.7rem 1rem; background: var(--ink); color: #fff; border: none; border-radius: var(--radius); font-family: "Syne", sans-serif; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: background 0.2s, transform 0.1s; letter-spacing: 0.03em; display: flex; align-items: center; justify-content: center; gap: 8px; }
     .btn-search:hover { background: #1a1a1a; }
     .btn-search:active { transform: scale(0.98); }
     .btn-search:disabled { background: #aaa; cursor: not-allowed; }
@@ -80,7 +54,6 @@
     .job-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.4rem; margin-bottom: 0.75rem; transition: box-shadow 0.2s, border-color 0.2s; animation: fadeUp 0.3s ease both; }
     @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     .job-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.07); border-color: #c0bdb5; }
-    .job-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
     .job-title-link { font-family: "Syne", sans-serif; font-weight: 700; font-size: 1.05rem; color: var(--accent); text-decoration: none; line-height: 1.3; }
     .job-title-link:hover { text-decoration: underline; }
     .company-name { font-size: 0.88rem; font-weight: 500; color: var(--ink); margin-top: 3px; margin-bottom: 0.6rem; }
@@ -114,7 +87,6 @@
     .step-list { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 1.5rem; }
     .step { background: var(--paper); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.75rem 1rem; font-size: 0.82rem; color: var(--muted); min-width: 130px; }
     .step strong { display: block; color: var(--ink); font-weight: 600; margin-bottom: 3px; }
-
     .btn-spinner { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; display: none; }
 
     @media (max-width: 860px) { .shell { grid-template-columns: 1fr; } .sidebar { position: static; } }
@@ -123,10 +95,7 @@
 <body>
 
 <header>
-  <div class="logo">
-    <span class="logo-dot"></span>
-    Job Intelligence Engine
-  </div>
+  <div class="logo"><span class="logo-dot"></span>Job Intelligence Engine</div>
   <span class="header-tag">SERP API v2</span>
 </header>
 
@@ -135,9 +104,7 @@
     <div class="sidebar-title">⚙ Search Filters</div>
 
     <div class="field-label">Upload Companies (.txt / .csv)</div>
-    <label class="file-upload-label" for="companyFile">
-      📂 <span id="fileLabel">Choose file…</span>
-    </label>
+    <label class="file-upload-label" for="companyFile">📂 <span id="fileLabel">Choose file…</span></label>
     <input type="file" id="companyFile" accept=".txt,.csv" />
     <div class="file-badge" id="fileBadge"></div>
 
@@ -194,10 +161,10 @@
         <h2>LinkedIn Job Intelligence</h2>
         <p>Scan LinkedIn job listings instantly using a single optimized SERP API query.</p>
         <div class="step-list">
-          <div class="step"><strong>1. Companies</strong>Upload or type target companies</div>
+          <div class="step"><strong>1. Companies</strong>Upload or type targets</div>
           <div class="step"><strong>2. Roles</strong>Specify job titles</div>
           <div class="step"><strong>3. Filters</strong>Location, mode, date</div>
-          <div class="step"><strong>4. Search</strong>Get structured results</div>
+          <div class="step"><strong>4. Search</strong>Get results</div>
         </div>
       </div>
     </div>
@@ -205,6 +172,10 @@
 </div>
 
 <script>
+  // ─── IMPORTANT: Replace this with your Render backend URL after deploying ───
+  const API_BASE = "https://your-backend.onrender.com";
+  // ────────────────────────────────────────────────────────────────────────────
+
   let uploadedCompanies = [];
 
   document.getElementById("companyFile").addEventListener("change", function (e) {
@@ -224,13 +195,11 @@
   function getCompanies() {
     if (uploadedCompanies.length > 0) return uploadedCompanies;
     const manual = document.getElementById("manualCompanies").value.trim();
-    if (manual) return manual.split(",").map(c => c.trim()).filter(Boolean);
-    return [];
+    return manual ? manual.split(",").map(c => c.trim()).filter(Boolean) : [];
   }
 
   function modeClass(mode) {
-    if (!mode) return "";
-    const m = mode.toLowerCase();
+    const m = (mode || "").toLowerCase();
     if (m.includes("remote")) return "mode remote";
     if (m.includes("hybrid")) return "mode hybrid";
     if (m.includes("on-site") || m.includes("onsite")) return "mode onsite";
@@ -244,11 +213,9 @@
     const modeTag = job.Mode && job.Mode !== "Unknown" ? `<span class="tag ${modeClass(job.Mode)}">💼 ${job.Mode}</span>` : "";
     const locTag = job.Location && job.Location !== "Unknown" ? `<span class="tag location">📍 ${job.Location}</span>` : "";
     div.innerHTML = `
-      <div class="job-card-top">
-        <div>
-          <a class="job-title-link" href="${job.Link}" target="_blank">${job.Title}</a>
-          <div class="company-name">${job.Company}</div>
-        </div>
+      <div>
+        <a class="job-title-link" href="${job.Link}" target="_blank">${job.Title}</a>
+        <div class="company-name">${job.Company}</div>
       </div>
       <div class="job-meta">${locTag}${modeTag}<span class="tag recent">🕒 ${job.Posted}</span></div>
       <div class="job-summary">${job.Summary || "No description available."}</div>
@@ -270,13 +237,12 @@
     btn.disabled = true;
     document.getElementById("btnSpinner").style.display = "block";
     document.getElementById("btnText").textContent = "Searching…";
-    setStatus('<div class="loader-ring" style="width:18px;height:18px;border-width:2px"></div> <span>Running optimized SERP query on LinkedIn…</span>', "");
+    setStatus('<span>🔄 Querying LinkedIn via Render backend…</span>', "");
     document.getElementById("jobResults").innerHTML = `<div class="loader-wrap"><div class="loader-ring"></div><span class="loader-text">Fetching LinkedIn intelligence…</span></div>`;
     document.getElementById("queryDisplay").style.display = "none";
 
     try {
-      // Note: no apiKey sent — it's handled server-side via .env
-      const res = await fetch("/api/search", {
+      const res = await fetch(`${API_BASE}/api/search`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ companies, roles, location, workMode, dateFilter })
@@ -290,7 +256,7 @@
       results.innerHTML = "";
 
       if (jobs.length === 0) {
-        results.innerHTML = `<div class="empty-state"><div class="icon">🔍</div><h3>No results found</h3><p>Try removing filters, adding more companies, or expanding your date range.</p></div>`;
+        results.innerHTML = `<div class="empty-state"><div class="icon">🔍</div><h3>No results found</h3><p>Try removing filters or expanding your date range.</p></div>`;
         setStatus("No matching jobs found.", "");
       } else {
         jobs.forEach((job, i) => results.appendChild(createCard(job, i)));
@@ -318,6 +284,5 @@
     bar.innerHTML = html;
   }
 </script>
-
 </body>
 </html>

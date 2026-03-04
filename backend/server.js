@@ -1,22 +1,54 @@
-require("dotenv").config({ path: require("path").join(__dirname, "../.env") });
-
+require("dotenv").config();
 const express = require("express");
 const axios = require("axios");
 const cors = require("cors");
-const path = require("path");
 
 const app = express();
-app.use(cors());
-app.use(express.json());
-app.use(express.static(path.join(__dirname, "../frontend/public")));
 
+// Allow requests from your Vercel frontend
+// After deploying to Vercel, replace the URL below with your actual Vercel URL
+const ALLOWED_ORIGINS = [
+  "http://localhost:3000",
+  "http://localhost:5500",
+  "http://127.0.0.1:5500",
+  process.env.FRONTEND_URL  // set this in Render dashboard e.g. https://your-app.vercel.app
+].filter(Boolean);
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (e.g. curl, Postman) or from allowed list
+    if (!origin || ALLOWED_ORIGINS.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  }
+}));
+
+app.use(express.json());
+
+// -----------------------------------------------
+// Health check — Render pings this to keep alive
+// -----------------------------------------------
+app.get("/", (req, res) => {
+  res.json({ status: "Job Intelligence Engine API is running ✅" });
+});
+
+// -----------------------------------------------
+// Utility: Extract Job ID from LinkedIn URL
+// -----------------------------------------------
 function extractJobId(url) {
   const match = url.match(/jobs\/view\/.*?(\d+)/);
   return match ? match[1] : null;
 }
 
+// -----------------------------------------------
+// Utility: Extract Company, Location, Mode
+// -----------------------------------------------
 function extractCompanyLocation(title, snippet) {
-  let company = "Unknown", location = "Unknown", mode = "Unknown";
+  let company = "Unknown";
+  let location = "Unknown";
+  let mode = "Unknown";
 
   if (title.includes(" - ")) {
     company = title.split(" - ")[1].split(" | ")[0].trim();
@@ -27,7 +59,14 @@ function extractCompanyLocation(title, snippet) {
   }
 
   const text = `${title} ${snippet}`.toLowerCase();
-  const locationMap = ["Bangalore","Karnataka","Bengaluru","Chennai","Tamil Nadu","Hyderabad","Telangana","Pune","Maharashtra","Mumbai","Delhi","Gurgaon","Noida","India"];
+  const locationMap = [
+    "Bangalore", "Karnataka", "Bengaluru",
+    "Chennai", "Tamil Nadu",
+    "Hyderabad", "Telangana",
+    "Pune", "Maharashtra",
+    "Mumbai", "Delhi", "Gurgaon", "Noida", "India"
+  ];
+
   for (const loc of locationMap) {
     if (text.includes(loc.toLowerCase())) { location = loc; break; }
   }
@@ -39,6 +78,9 @@ function extractCompanyLocation(title, snippet) {
   return { company, location, mode };
 }
 
+// -----------------------------------------------
+// Utility: Build optimized SERP query
+// -----------------------------------------------
 function buildQuery(companies, roles, location, workMode) {
   let query = `site:linkedin.com/jobs/view`;
   if (roles && roles.length > 0) query += ` (${roles.map(r => `"${r}"`).join(" OR ")})`;
@@ -48,13 +90,15 @@ function buildQuery(companies, roles, location, workMode) {
   return query;
 }
 
+// -----------------------------------------------
+// POST /api/search
+// -----------------------------------------------
 app.post("/api/search", async (req, res) => {
   const { companies = [], roles = [], location = "All", workMode = "All", dateFilter = "week" } = req.body;
 
-  // API key is read from .env — never sent from frontend
   const apiKey = process.env.SERP_API_KEY;
   if (!apiKey) {
-    return res.status(500).json({ error: "SERP_API_KEY is not set in your .env file." });
+    return res.status(500).json({ error: "SERP_API_KEY not set in environment variables." });
   }
 
   const query = buildQuery(companies, roles, location, workMode);
@@ -82,7 +126,11 @@ app.post("/api/search", async (req, res) => {
       const snippet = r.snippet || "";
       const { company, location: loc, mode } = extractCompanyLocation(title, snippet);
 
-      jobs.push({ Job_ID: jobId, Title: title, Company: company, Location: loc, Mode: mode, Posted: r.date || "Recent", Link: link, Summary: snippet });
+      jobs.push({
+        Job_ID: jobId, Title: title, Company: company,
+        Location: loc, Mode: mode,
+        Posted: r.date || "Recent", Link: link, Summary: snippet
+      });
     }
 
     const filtered = jobs.filter(job => {
@@ -94,13 +142,12 @@ app.post("/api/search", async (req, res) => {
     res.json({ jobs: filtered, total: filtered.length, query });
   } catch (err) {
     console.error("SERP API Error:", err.response?.data || err.message);
-    res.status(500).json({ error: err.response?.data?.error || "Search failed. Check your .env API key." });
+    res.status(500).json({ error: err.response?.data?.error || "Search failed." });
   }
 });
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend/public/index.html"));
-});
-
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`\n✅ Job Intelligence Engine running at http://localhost:${PORT}\n`));
+app.listen(PORT, () => {
+  console.log(`\n✅ Backend running on port ${PORT}`);
+  console.log(`🔑 SERP API Key: ${process.env.SERP_API_KEY ? "Loaded ✓" : "MISSING ✗"}\n`);
+});

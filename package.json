@@ -1,11 +1,11 @@
 {
-  "name": "job-intelligence-engine",
+  "name": "job-intelligence-backend",
   "version": "1.0.0",
-  "description": "LinkedIn Job Intelligence Engine using SERP API",
-  "main": "backend/server.js",
+  "description": "Job Intelligence Engine - Backend API",
+  "main": "server.js",
   "scripts": {
-    "start": "node backend/server.js",
-    "dev": "nodemon backend/server.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
   "dependencies": {
     "axios": "^1.6.0",
@@ -15,5 +15,8 @@
   },
   "devDependencies": {
     "nodemon": "^3.0.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
