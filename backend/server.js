@@ -1,3 +1,5 @@
+require("dotenv").config({ path: require("path").join(__dirname, "../.env") });
+
 const express = require("express");
 const axios = require("axios");
 const cors = require("cors");
@@ -8,26 +10,14 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "../frontend/public")));
 
-// -----------------------------------------------
-// Utility: Extract Job ID from LinkedIn URL
-// -----------------------------------------------
 function extractJobId(url) {
-  // LinkedIn URLs can be /view/12345 or /view/slug-12345
   const match = url.match(/jobs\/view\/.*?(\d+)/);
   return match ? match[1] : null;
 }
 
-// -----------------------------------------------
-// Utility: Extract Company & Location from title/snippet
-// -----------------------------------------------
 function extractCompanyLocation(title, snippet) {
-  let company = "Unknown";
-  let location = "Unknown";
-  let mode = "Unknown";
+  let company = "Unknown", location = "Unknown", mode = "Unknown";
 
-  // Try different LinkedIn title formats:
-  // 1. "Job Title - Company Name | LinkedIn"
-  // 2. "Software Engineer at Google | LinkedIn"
   if (title.includes(" - ")) {
     company = title.split(" - ")[1].split(" | ")[0].trim();
   } else if (title.includes(" at ")) {
@@ -37,20 +27,9 @@ function extractCompanyLocation(title, snippet) {
   }
 
   const text = `${title} ${snippet}`.toLowerCase();
-
-  const locationMap = [
-    "Bangalore", "Karnataka", "Bengaluru",
-    "Chennai", "Tamil Nadu",
-    "Hyderabad", "Telangana",
-    "Pune", "Maharashtra",
-    "Mumbai", "Delhi", "Gurgaon", "Noida", "India"
-  ];
-
+  const locationMap = ["Bangalore","Karnataka","Bengaluru","Chennai","Tamil Nadu","Hyderabad","Telangana","Pune","Maharashtra","Mumbai","Delhi","Gurgaon","Noida","India"];
   for (const loc of locationMap) {
-    if (text.includes(loc.toLowerCase())) {
-      location = loc;
-      break;
-    }
+    if (text.includes(loc.toLowerCase())) { location = loc; break; }
   }
 
   if (text.includes("remote")) mode = "Remote";
@@ -60,65 +39,30 @@ function extractCompanyLocation(title, snippet) {
   return { company, location, mode };
 }
 
-// -----------------------------------------------
-// Utility: Build optimized SERP API query
-// -----------------------------------------------
 function buildQuery(companies, roles, location, workMode) {
   let query = `site:linkedin.com/jobs/view`;
-
-  if (roles && roles.length > 0) {
-    const roleStr = `(${roles.map(r => `"${r}"`).join(" OR ")})`;
-    query += ` ${roleStr}`;
-  }
-
-  if (companies && companies.length > 0) {
-    const companyStr = `(${companies.map(c => `"${c}"`).join(" OR ")})`;
-    query += ` ${companyStr}`;
-  }
-
+  if (roles && roles.length > 0) query += ` (${roles.map(r => `"${r}"`).join(" OR ")})`;
+  if (companies && companies.length > 0) query += ` (${companies.map(c => `"${c}"`).join(" OR ")})`;
   if (location && location !== "All") query += ` "${location}"`;
   if (workMode && workMode !== "All") query += ` "${workMode}"`;
-
   return query;
 }
 
-// -----------------------------------------------
-// POST /api/search
-// -----------------------------------------------
 app.post("/api/search", async (req, res) => {
-  const {
-    companies = [],
-    roles = [],
-    location = "All",
-    workMode = "All",
-    dateFilter = "week",
-    apiKey
-  } = req.body;
+  const { companies = [], roles = [], location = "All", workMode = "All", dateFilter = "week" } = req.body;
 
+  // API key is read from .env — never sent from frontend
+  const apiKey = process.env.SERP_API_KEY;
   if (!apiKey) {
-    return res.status(400).json({ error: "SERP API key is required." });
+    return res.status(500).json({ error: "SERP_API_KEY is not set in your .env file." });
   }
 
   const query = buildQuery(companies, roles, location, workMode);
-
-  // Map dateFilter to SERP API tbs param
-  const tbsMap = {
-    day: "qdr:d",
-    week: "qdr:w",
-    month: "qdr:m",
-    all: ""
-  };
+  const tbsMap = { day: "qdr:d", week: "qdr:w", month: "qdr:m", all: "" };
   const tbs = tbsMap[dateFilter] || "qdr:w";
 
   try {
-    const params = {
-      engine: "google",
-      q: query,
-      num: 20,
-      hl: "en",
-      gl: "in",
-      api_key: apiKey
-    };
+    const params = { engine: "google", q: query, num: 20, hl: "en", gl: "in", api_key: apiKey };
     if (tbs) params.tbs = tbs;
 
     const response = await axios.get("https://serpapi.com/search.json", { params });
@@ -130,7 +74,6 @@ app.post("/api/search", async (req, res) => {
     for (const r of organicResults) {
       const link = r.link || "";
       if (!link.includes("linkedin.com/jobs/view")) continue;
-
       const jobId = extractJobId(link);
       if (!jobId || seen.has(jobId)) continue;
       seen.add(jobId);
@@ -139,19 +82,9 @@ app.post("/api/search", async (req, res) => {
       const snippet = r.snippet || "";
       const { company, location: loc, mode } = extractCompanyLocation(title, snippet);
 
-      jobs.push({
-        Job_ID: jobId,
-        Title: title,
-        Company: company,
-        Location: loc,
-        Mode: mode,
-        Posted: r.date || "Recent",
-        Link: link,
-        Summary: snippet
-      });
+      jobs.push({ Job_ID: jobId, Title: title, Company: company, Location: loc, Mode: mode, Posted: r.date || "Recent", Link: link, Summary: snippet });
     }
 
-    // Client-side filterable response — also do server-side pass
     const filtered = jobs.filter(job => {
       if (location !== "All" && !job.Location.toLowerCase().includes(location.toLowerCase()) && job.Location !== "Unknown") return false;
       if (workMode !== "All" && job.Mode !== workMode && job.Mode !== "Unknown") return false;
@@ -161,18 +94,13 @@ app.post("/api/search", async (req, res) => {
     res.json({ jobs: filtered, total: filtered.length, query });
   } catch (err) {
     console.error("SERP API Error:", err.response?.data || err.message);
-    res.status(500).json({ error: err.response?.data?.error || "Search failed. Check your API key." });
+    res.status(500).json({ error: err.response?.data?.error || "Search failed. Check your .env API key." });
   }
 });
 
-// -----------------------------------------------
-// Serve frontend for all other routes
-// -----------------------------------------------
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/public/index.html"));
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`\n✅ Job Intelligence Engine running at http://localhost:${PORT}\n`);
-});
+app.listen(PORT, () => console.log(`\n✅ Job Intelligence Engine running at http://localhost:${PORT}\n`));

@@ -17,438 +17,107 @@
       --radius: 6px;
       --mono: "SF Mono", "Fira Code", monospace;
     }
-
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "DM Sans", sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; }
 
-    body {
-      font-family: "DM Sans", sans-serif;
-      background: var(--paper);
-      color: var(--ink);
-      min-height: 100vh;
-    }
-
-    /* ─── HEADER ─── */
     header {
-      background: var(--ink);
-      padding: 0 2.5rem;
-      height: 58px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 200;
+      background: var(--ink); padding: 0 2.5rem; height: 58px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 200;
     }
-
-    .logo {
-      font-family: "Syne", sans-serif;
-      font-weight: 800;
-      font-size: 1.1rem;
-      color: #fff;
-      letter-spacing: 0.02em;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .logo-dot {
-      width: 8px; height: 8px;
-      background: var(--accent2);
-      border-radius: 50%;
-      display: inline-block;
-      animation: pulse 2s infinite;
-    }
-
+    .logo { font-family: "Syne", sans-serif; font-weight: 800; font-size: 1.1rem; color: #fff; letter-spacing: 0.02em; display: flex; align-items: center; gap: 8px; }
+    .logo-dot { width: 8px; height: 8px; background: var(--accent2); border-radius: 50%; display: inline-block; animation: pulse 2s infinite; }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+    .header-tag { font-size: 0.7rem; color: #888; font-family: var(--mono); letter-spacing: 0.1em; text-transform: uppercase; }
 
-    .header-tag {
-      font-size: 0.7rem;
-      color: #888;
-      font-family: var(--mono);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-    }
+    .shell { max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem; display: grid; grid-template-columns: 280px 1fr; gap: 1.5rem; align-items: start; }
 
-    /* ─── LAYOUT ─── */
-    .shell {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 2rem 1.5rem;
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      gap: 1.5rem;
-      align-items: start;
-    }
+    .sidebar { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; position: sticky; top: 74px; height: fit-content; }
+    .sidebar-title { font-family: "Syne", sans-serif; font-weight: 700; font-size: 0.95rem; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 8px; }
+    .sidebar-title::after { content: ""; flex: 1; height: 1px; background: var(--border); }
 
-    /* ─── SIDEBAR ─── */
-    .sidebar {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.5rem;
-      position: sticky;
-      top: 74px;
-      height: fit-content;
-    }
-
-    .sidebar-title {
-      font-family: "Syne", sans-serif;
-      font-weight: 700;
-      font-size: 0.95rem;
-      margin-bottom: 1.25rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .sidebar-title::after {
-      content: "";
-      flex: 1;
-      height: 1px;
-      background: var(--border);
-    }
-
-    .field-label {
-      font-size: 0.7rem;
-      font-weight: 500;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 5px;
-      margin-top: 1rem;
-    }
-
+    .field-label { font-size: 0.7rem; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 5px; margin-top: 1rem; }
     .field-label:first-of-type { margin-top: 0; }
 
-    input[type="text"],
-    input[type="password"],
-    select,
-    textarea {
-      width: 100%;
-      padding: 0.55rem 0.75rem;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      font-family: "DM Sans", sans-serif;
-      font-size: 0.88rem;
-      background: #fafaf8;
-      color: var(--ink);
-      transition: border-color 0.15s;
-      outline: none;
+    input[type="text"], select, textarea {
+      width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--border);
+      border-radius: var(--radius); font-family: "DM Sans", sans-serif;
+      font-size: 0.88rem; background: #fafaf8; color: var(--ink);
+      transition: border-color 0.15s; outline: none;
     }
-
-    input:focus, select:focus, textarea:focus {
-      border-color: var(--accent);
-      background: #fff;
-    }
-
+    input:focus, select:focus, textarea:focus { border-color: var(--accent); background: #fff; }
     textarea { resize: vertical; min-height: 72px; font-size: 0.82rem; }
 
-    .api-row {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-    }
-
-    .api-row input { flex: 1; font-family: var(--mono); font-size: 0.78rem; }
-
-    .btn-toggle-key {
-      background: none;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 0.5rem 0.6rem;
-      cursor: pointer;
-      font-size: 0.9rem;
-      color: var(--muted);
-      transition: color 0.15s;
-    }
-    .btn-toggle-key:hover { color: var(--ink); }
-
     .file-upload-label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 0.55rem 0.75rem;
-      border: 1px dashed var(--border);
-      border-radius: var(--radius);
-      cursor: pointer;
-      font-size: 0.85rem;
-      color: var(--muted);
-      transition: border-color 0.15s, color 0.15s;
-      background: #fafaf8;
+      display: flex; align-items: center; gap: 8px; padding: 0.55rem 0.75rem;
+      border: 1px dashed var(--border); border-radius: var(--radius);
+      cursor: pointer; font-size: 0.85rem; color: var(--muted);
+      transition: border-color 0.15s, color 0.15s; background: #fafaf8;
     }
     .file-upload-label:hover { border-color: var(--accent); color: var(--accent); }
     #companyFile { display: none; }
-
-    .file-badge {
-      display: none;
-      font-size: 0.75rem;
-      background: #e7f3ff;
-      color: var(--accent);
-      padding: 2px 8px;
-      border-radius: 20px;
-      margin-top: 4px;
-    }
-
+    .file-badge { display: none; font-size: 0.75rem; background: #e7f3ff; color: var(--accent); padding: 2px 8px; border-radius: 20px; margin-top: 4px; }
     .divider { height: 1px; background: var(--border); margin: 1.25rem 0; }
 
     .btn-search {
-      width: 100%;
-      margin-top: 0.25rem;
-      padding: 0.7rem 1rem;
-      background: var(--ink);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius);
-      font-family: "Syne", sans-serif;
-      font-weight: 700;
-      font-size: 0.95rem;
-      cursor: pointer;
-      transition: background 0.2s, transform 0.1s;
-      letter-spacing: 0.03em;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
+      width: 100%; margin-top: 0.25rem; padding: 0.7rem 1rem;
+      background: var(--ink); color: #fff; border: none; border-radius: var(--radius);
+      font-family: "Syne", sans-serif; font-weight: 700; font-size: 0.95rem;
+      cursor: pointer; transition: background 0.2s, transform 0.1s; letter-spacing: 0.03em;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
     }
     .btn-search:hover { background: #1a1a1a; }
     .btn-search:active { transform: scale(0.98); }
     .btn-search:disabled { background: #aaa; cursor: not-allowed; }
 
-    /* ─── MAIN CONTENT ─── */
     .main { min-width: 0; }
-
-    .status-bar {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 0.85rem 1.25rem;
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 0.9rem;
-      color: var(--muted);
-      min-height: 50px;
-    }
-
+    .status-bar { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.85rem 1.25rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 12px; font-size: 0.9rem; color: var(--muted); min-height: 50px; }
     .status-bar.error { border-color: #ffcdd2; background: #fff5f5; color: var(--accent2); }
     .status-bar.success { border-color: #c8e6c9; background: #f5fff5; color: #2e7d32; }
 
-    .query-pill {
-      display: none;
-      margin-top: 8px;
-      font-family: var(--mono);
-      font-size: 0.7rem;
-      color: var(--muted);
-      background: #f3f2ef;
-      padding: 6px 10px;
-      border-radius: var(--radius);
-      word-break: break-all;
-      border: 1px solid var(--border);
-    }
+    .query-pill { display: none; margin-top: 8px; font-family: var(--mono); font-size: 0.7rem; color: var(--muted); background: #f3f2ef; padding: 6px 10px; border-radius: var(--radius); word-break: break-all; border: 1px solid var(--border); margin-bottom: 1rem; }
 
-    /* ─── JOB CARDS ─── */
-    .job-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.4rem;
-      margin-bottom: 0.75rem;
-      transition: box-shadow 0.2s, border-color 0.2s;
-      animation: fadeUp 0.3s ease both;
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .job-card:hover {
-      box-shadow: 0 4px 20px rgba(0,0,0,0.07);
-      border-color: #c0bdb5;
-    }
-
-    .job-card-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 0.5rem;
-    }
-
-    .job-title-link {
-      font-family: "Syne", sans-serif;
-      font-weight: 700;
-      font-size: 1.05rem;
-      color: var(--accent);
-      text-decoration: none;
-      line-height: 1.3;
-    }
+    .job-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.4rem; margin-bottom: 0.75rem; transition: box-shadow 0.2s, border-color 0.2s; animation: fadeUp 0.3s ease both; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .job-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.07); border-color: #c0bdb5; }
+    .job-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
+    .job-title-link { font-family: "Syne", sans-serif; font-weight: 700; font-size: 1.05rem; color: var(--accent); text-decoration: none; line-height: 1.3; }
     .job-title-link:hover { text-decoration: underline; }
-
-    .company-name {
-      font-size: 0.88rem;
-      font-weight: 500;
-      color: var(--ink);
-      margin-top: 3px;
-      margin-bottom: 0.6rem;
-    }
-
-    .job-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 0.75rem;
-    }
-
-    .tag {
-      font-size: 0.72rem;
-      font-weight: 500;
-      padding: 3px 10px;
-      border-radius: 20px;
-      background: #f3f2ef;
-      color: var(--muted);
-      border: 1px solid var(--border);
-      letter-spacing: 0.03em;
-    }
-
+    .company-name { font-size: 0.88rem; font-weight: 500; color: var(--ink); margin-top: 3px; margin-bottom: 0.6rem; }
+    .job-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 0.75rem; }
+    .tag { font-size: 0.72rem; font-weight: 500; padding: 3px 10px; border-radius: 20px; background: #f3f2ef; color: var(--muted); border: 1px solid var(--border); letter-spacing: 0.03em; }
     .tag.location { background: #eef3ff; color: #1a56d6; border-color: #c5d5fa; }
     .tag.mode.remote { background: #e6faf2; color: #0a7c50; border-color: #9de5c7; }
     .tag.mode.hybrid { background: #fff8e6; color: #7a5500; border-color: #f5d98c; }
     .tag.mode.onsite { background: #ffeef0; color: #b11c1c; border-color: #f5c0c0; }
     .tag.recent { background: #e6f0ff; color: var(--accent); border-color: #b3cfff; }
-
-    .job-summary {
-      font-size: 0.87rem;
-      line-height: 1.55;
-      color: #555;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      margin-bottom: 1rem;
-    }
-
-    .job-card-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .job-id {
-      font-family: var(--mono);
-      font-size: 0.68rem;
-      color: var(--muted);
-      background: #f3f2ef;
-      padding: 2px 7px;
-      border-radius: 4px;
-      border: 1px solid var(--border);
-    }
-
-    .btn-apply {
-      padding: 6px 18px;
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      border-radius: 20px;
-      font-family: "Syne", sans-serif;
-      font-weight: 600;
-      font-size: 0.8rem;
-      text-decoration: none;
-      cursor: pointer;
-      transition: background 0.15s;
-      letter-spacing: 0.03em;
-    }
+    .job-summary { font-size: 0.87rem; line-height: 1.55; color: #555; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 1rem; }
+    .job-card-footer { display: flex; align-items: center; justify-content: space-between; }
+    .job-id { font-family: var(--mono); font-size: 0.68rem; color: var(--muted); background: #f3f2ef; padding: 2px 7px; border-radius: 4px; border: 1px solid var(--border); }
+    .btn-apply { padding: 6px 18px; background: var(--accent); color: #fff; border: none; border-radius: 20px; font-family: "Syne", sans-serif; font-weight: 600; font-size: 0.8rem; text-decoration: none; cursor: pointer; transition: background 0.15s; letter-spacing: 0.03em; }
     .btn-apply:hover { background: #0040cc; }
 
-    /* ─── LOADER ─── */
-    .loader-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 4rem;
-      gap: 1rem;
-    }
-
-    .loader-ring {
-      width: 36px; height: 36px;
-      border: 3px solid var(--border);
-      border-top-color: var(--accent);
-      border-radius: 50%;
-      animation: spin 0.75s linear infinite;
-    }
-
+    .loader-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4rem; gap: 1rem; }
+    .loader-ring { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.75s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    .loader-text {
-      font-size: 0.85rem;
-      color: var(--muted);
-      font-family: var(--mono);
-      animation: blink 1.2s infinite;
-    }
-
+    .loader-text { font-size: 0.85rem; color: var(--muted); font-family: var(--mono); animation: blink 1.2s infinite; }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.4} }
 
-    /* ─── EMPTY STATE ─── */
-    .empty-state {
-      text-align: center;
-      padding: 4rem 2rem;
-      color: var(--muted);
-    }
+    .empty-state { text-align: center; padding: 4rem 2rem; color: var(--muted); }
     .empty-state .icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
     .empty-state h3 { font-family: "Syne", sans-serif; font-weight: 700; margin-bottom: 0.5rem; color: var(--ink); }
     .empty-state p { font-size: 0.88rem; }
 
-    /* ─── WELCOME ─── */
-    .welcome {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 2.5rem;
-      text-align: center;
-    }
-    .welcome h2 {
-      font-family: "Syne", sans-serif;
-      font-weight: 800;
-      font-size: 1.5rem;
-      margin-bottom: 0.5rem;
-    }
+    .welcome { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 2.5rem; text-align: center; }
+    .welcome h2 { font-family: "Syne", sans-serif; font-weight: 800; font-size: 1.5rem; margin-bottom: 0.5rem; }
     .welcome p { font-size: 0.9rem; color: var(--muted); max-width: 400px; margin: 0 auto 1.5rem; }
-
-    .step-list {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-top: 1.5rem;
-    }
-
-    .step {
-      background: var(--paper);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 0.75rem 1rem;
-      font-size: 0.82rem;
-      color: var(--muted);
-      min-width: 140px;
-    }
+    .step-list { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 1.5rem; }
+    .step { background: var(--paper); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.75rem 1rem; font-size: 0.82rem; color: var(--muted); min-width: 130px; }
     .step strong { display: block; color: var(--ink); font-weight: 600; margin-bottom: 3px; }
 
-    /* ─── SPINNER in button ─── */
-    .btn-spinner {
-      width: 14px; height: 14px;
-      border: 2px solid rgba(255,255,255,0.4);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      display: none;
-    }
+    .btn-spinner { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; display: none; }
 
-    /* ─── RESPONSIVE ─── */
-    @media (max-width: 860px) {
-      .shell { grid-template-columns: 1fr; }
-      .sidebar { position: static; }
-    }
+    @media (max-width: 860px) { .shell { grid-template-columns: 1fr; } .sidebar { position: static; } }
   </style>
 </head>
 <body>
@@ -462,21 +131,9 @@
 </header>
 
 <div class="shell">
-
-  <!-- ── SIDEBAR ── -->
   <aside class="sidebar">
-    <div class="sidebar-title">⚙ Configuration</div>
+    <div class="sidebar-title">⚙ Search Filters</div>
 
-    <!-- API Key -->
-    <div class="field-label">SERP API Key</div>
-    <div class="api-row">
-      <input type="password" id="apiKey" placeholder="Enter your SerpAPI key…" />
-      <button class="btn-toggle-key" onclick="toggleKey()" title="Show/hide key">👁</button>
-    </div>
-
-    <div class="divider"></div>
-
-    <!-- Upload -->
     <div class="field-label">Upload Companies (.txt / .csv)</div>
     <label class="file-upload-label" for="companyFile">
       📂 <span id="fileLabel">Choose file…</span>
@@ -484,17 +141,14 @@
     <input type="file" id="companyFile" accept=".txt,.csv" />
     <div class="file-badge" id="fileBadge"></div>
 
-    <!-- Manual companies -->
     <div class="field-label">Or Type Companies (comma-separated)</div>
     <textarea id="manualCompanies" placeholder="Google, Microsoft, Amazon, TCS…"></textarea>
 
-    <!-- Roles -->
     <div class="field-label">Job Roles (comma-separated)</div>
     <input type="text" id="roles" placeholder="Software Engineer, Python Developer…" />
 
     <div class="divider"></div>
 
-    <!-- Filters -->
     <div class="field-label">Location</div>
     <select id="location">
       <option value="All">All Regions</option>
@@ -530,43 +184,35 @@
     </button>
   </aside>
 
-  <!-- ── MAIN ── -->
   <main class="main">
     <div class="status-bar" id="statusBar">
-      <span>👋 Enter your SERP API key and configure filters to begin.</span>
+      <span>👋 Configure your filters and click Search to begin.</span>
     </div>
     <div id="queryDisplay" class="query-pill"></div>
     <div id="jobResults">
-      <!-- Welcome state -->
       <div class="welcome">
         <h2>LinkedIn Job Intelligence</h2>
-        <p>Scan thousands of LinkedIn job listings instantly using a single optimized SERP API query.</p>
+        <p>Scan LinkedIn job listings instantly using a single optimized SERP API query.</p>
         <div class="step-list">
-          <div class="step"><strong>1. API Key</strong>Enter your SerpAPI key</div>
-          <div class="step"><strong>2. Companies</strong>Upload or type target companies</div>
-          <div class="step"><strong>3. Roles</strong>Specify job titles to search</div>
-          <div class="step"><strong>4. Filters</strong>Location, mode, date</div>
-          <div class="step"><strong>5. Search</strong>Get structured results</div>
+          <div class="step"><strong>1. Companies</strong>Upload or type target companies</div>
+          <div class="step"><strong>2. Roles</strong>Specify job titles</div>
+          <div class="step"><strong>3. Filters</strong>Location, mode, date</div>
+          <div class="step"><strong>4. Search</strong>Get structured results</div>
         </div>
       </div>
     </div>
   </main>
-
 </div>
 
 <script>
   let uploadedCompanies = [];
 
-  // ── File Upload ──
   document.getElementById("companyFile").addEventListener("change", function (e) {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
     reader.onload = (ev) => {
-      uploadedCompanies = ev.target.result
-        .split(/[\n,]+/)
-        .map(c => c.trim())
-        .filter(Boolean);
+      uploadedCompanies = ev.target.result.split(/[\n,]+/).map(c => c.trim()).filter(Boolean);
       document.getElementById("fileLabel").textContent = file.name;
       const badge = document.getElementById("fileBadge");
       badge.style.display = "inline-block";
@@ -575,12 +221,6 @@
     reader.readAsText(file);
   });
 
-  function toggleKey() {
-    const input = document.getElementById("apiKey");
-    input.type = input.type === "password" ? "text" : "password";
-  }
-
-  // ── Get Companies ──
   function getCompanies() {
     if (uploadedCompanies.length > 0) return uploadedCompanies;
     const manual = document.getElementById("manualCompanies").value.trim();
@@ -588,7 +228,6 @@
     return [];
   }
 
-  // ── Mode tag class ──
   function modeClass(mode) {
     if (!mode) return "";
     const m = mode.toLowerCase();
@@ -598,17 +237,12 @@
     return "";
   }
 
-  // ── Render job card ──
   function createCard(job, index) {
     const div = document.createElement("div");
     div.className = "job-card";
     div.style.animationDelay = `${index * 0.04}s`;
-
-    const modeTag = job.Mode && job.Mode !== "Unknown"
-      ? `<span class="tag ${modeClass(job.Mode)}">💼 ${job.Mode}</span>` : "";
-    const locTag = job.Location && job.Location !== "Unknown"
-      ? `<span class="tag location">📍 ${job.Location}</span>` : "";
-
+    const modeTag = job.Mode && job.Mode !== "Unknown" ? `<span class="tag ${modeClass(job.Mode)}">💼 ${job.Mode}</span>` : "";
+    const locTag = job.Location && job.Location !== "Unknown" ? `<span class="tag location">📍 ${job.Location}</span>` : "";
     div.innerHTML = `
       <div class="job-card-top">
         <div>
@@ -616,58 +250,39 @@
           <div class="company-name">${job.Company}</div>
         </div>
       </div>
-      <div class="job-meta">
-        ${locTag}
-        ${modeTag}
-        <span class="tag recent">🕒 ${job.Posted}</span>
-      </div>
+      <div class="job-meta">${locTag}${modeTag}<span class="tag recent">🕒 ${job.Posted}</span></div>
       <div class="job-summary">${job.Summary || "No description available."}</div>
       <div class="job-card-footer">
         <span class="job-id">ID: ${job.Job_ID || "N/A"}</span>
         <a class="btn-apply" href="${job.Link}" target="_blank">Easy Apply →</a>
-      </div>
-    `;
+      </div>`;
     return div;
   }
 
-  // ── Main search function ──
   async function startSearch() {
-    const apiKey = document.getElementById("apiKey").value.trim();
-    if (!apiKey) {
-      setStatus("⚠ Please enter your SERP API key.", "error");
-      return;
-    }
-
     const companies = getCompanies();
-    const roles = document.getElementById("roles").value
-      .split(",").map(r => r.trim()).filter(Boolean);
+    const roles = document.getElementById("roles").value.split(",").map(r => r.trim()).filter(Boolean);
     const location = document.getElementById("location").value;
     const workMode = document.getElementById("workMode").value;
     const dateFilter = document.getElementById("dateFilter").value;
 
-    // Loading state
     const btn = document.getElementById("searchBtn");
     btn.disabled = true;
     document.getElementById("btnSpinner").style.display = "block";
     document.getElementById("btnText").textContent = "Searching…";
-
-    setStatus('<div class="loader-ring"></div> <span>Running optimized SERP query on LinkedIn…</span>', "");
-    document.getElementById("jobResults").innerHTML = `
-      <div class="loader-wrap">
-        <div class="loader-ring"></div>
-        <span class="loader-text">Fetching LinkedIn intelligence…</span>
-      </div>`;
+    setStatus('<div class="loader-ring" style="width:18px;height:18px;border-width:2px"></div> <span>Running optimized SERP query on LinkedIn…</span>', "");
+    document.getElementById("jobResults").innerHTML = `<div class="loader-wrap"><div class="loader-ring"></div><span class="loader-text">Fetching LinkedIn intelligence…</span></div>`;
     document.getElementById("queryDisplay").style.display = "none";
 
     try {
+      // Note: no apiKey sent — it's handled server-side via .env
       const res = await fetch("/api/search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ companies, roles, location, workMode, dateFilter, apiKey })
+        body: JSON.stringify({ companies, roles, location, workMode, dateFilter })
       });
 
       const data = await res.json();
-
       if (!res.ok) throw new Error(data.error || "Unknown error");
 
       const jobs = data.jobs || [];
@@ -675,12 +290,7 @@
       results.innerHTML = "";
 
       if (jobs.length === 0) {
-        results.innerHTML = `
-          <div class="empty-state">
-            <div class="icon">🔍</div>
-            <h3>No results found</h3>
-            <p>Try removing filters, adding more companies, or expanding your date range.</p>
-          </div>`;
+        results.innerHTML = `<div class="empty-state"><div class="icon">🔍</div><h3>No results found</h3><p>Try removing filters, adding more companies, or expanding your date range.</p></div>`;
         setStatus("No matching jobs found.", "");
       } else {
         jobs.forEach((job, i) => results.appendChild(createCard(job, i)));
@@ -692,14 +302,8 @@
         qd.style.display = "block";
         qd.textContent = "Query: " + data.query.replace(/\s+/g, " ").trim();
       }
-
     } catch (err) {
-      document.getElementById("jobResults").innerHTML = `
-        <div class="empty-state">
-          <div class="icon">❌</div>
-          <h3>Search Failed</h3>
-          <p>${err.message}</p>
-        </div>`;
+      document.getElementById("jobResults").innerHTML = `<div class="empty-state"><div class="icon">❌</div><h3>Search Failed</h3><p>${err.message}</p></div>`;
       setStatus("❌ " + err.message, "error");
     } finally {
       btn.disabled = false;
