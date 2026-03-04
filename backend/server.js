@@ -12,7 +12,8 @@ app.use(express.static(path.join(__dirname, "../frontend/public")));
 // Utility: Extract Job ID from LinkedIn URL
 // -----------------------------------------------
 function extractJobId(url) {
-  const match = url.match(/jobs\/view\/(\d+)/);
+  // LinkedIn URLs can be /view/12345 or /view/slug-12345
+  const match = url.match(/jobs\/view\/.*?(\d+)/);
   return match ? match[1] : null;
 }
 
@@ -24,10 +25,15 @@ function extractCompanyLocation(title, snippet) {
   let location = "Unknown";
   let mode = "Unknown";
 
-  // LinkedIn format: "Job Title - Company Name"
-  const parts = title.split(" - ");
-  if (parts.length >= 2) {
-    company = parts[1].split(" | ")[0].trim();
+  // Try different LinkedIn title formats:
+  // 1. "Job Title - Company Name | LinkedIn"
+  // 2. "Software Engineer at Google | LinkedIn"
+  if (title.includes(" - ")) {
+    company = title.split(" - ")[1].split(" | ")[0].trim();
+  } else if (title.includes(" at ")) {
+    company = title.split(" at ")[1].split(" | ")[0].trim();
+  } else if (title.includes(" hiring ")) {
+    company = title.split(" hiring ")[0].trim();
   }
 
   const text = `${title} ${snippet}`.toLowerCase();
@@ -58,15 +64,17 @@ function extractCompanyLocation(title, snippet) {
 // Utility: Build optimized SERP API query
 // -----------------------------------------------
 function buildQuery(companies, roles, location, workMode) {
-  const roleStr = roles.length
-    ? `(${roles.map(r => `"${r}"`).join(" OR ")})`
-    : `("Software Engineer" OR "Developer" OR "Analyst")`;
+  let query = `site:linkedin.com/jobs/view`;
 
-  const companyStr = companies.length
-    ? `(${companies.map(c => `"${c}"`).join(" OR ")})`
-    : `("Google" OR "Microsoft" OR "Amazon" OR "Infosys" OR "TCS")`;
+  if (roles && roles.length > 0) {
+    const roleStr = `(${roles.map(r => `"${r}"`).join(" OR ")})`;
+    query += ` ${roleStr}`;
+  }
 
-  let query = `site:linkedin.com/jobs/view ${roleStr} ${companyStr}`;
+  if (companies && companies.length > 0) {
+    const companyStr = `(${companies.map(c => `"${c}"`).join(" OR ")})`;
+    query += ` ${companyStr}`;
+  }
 
   if (location && location !== "All") query += ` "${location}"`;
   if (workMode && workMode !== "All") query += ` "${workMode}"`;
@@ -145,7 +153,7 @@ app.post("/api/search", async (req, res) => {
 
     // Client-side filterable response — also do server-side pass
     const filtered = jobs.filter(job => {
-      if (location !== "All" && !job.Location.toLowerCase().includes(location.toLowerCase())) return false;
+      if (location !== "All" && !job.Location.toLowerCase().includes(location.toLowerCase()) && job.Location !== "Unknown") return false;
       if (workMode !== "All" && job.Mode !== workMode && job.Mode !== "Unknown") return false;
       return true;
     });

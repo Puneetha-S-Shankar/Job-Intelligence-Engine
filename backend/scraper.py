@@ -27,7 +27,8 @@ INDIAN_LOCATIONS = [
 # Utility: Extract LinkedIn Job ID from URL
 # ──────────────────────────────────────────────
 def extract_job_id(url: str) -> str | None:
-    match = re.search(r"jobs/view/(\d+)", url)
+    # LinkedIn URLs can be /view/12345 or /view/slug-12345
+    match = re.search(r"jobs/view/.*?(\d+)", url)
     return match.group(1) if match else None
 
 
@@ -39,10 +40,15 @@ def extract_company_location(title: str, snippet: str) -> dict:
     location = "Unknown"
     mode = "Unknown"
 
-    # LinkedIn title format: "Job Title - Company Name"
-    parts = title.split(" - ")
-    if len(parts) >= 2:
-        company = parts[1].split(" | ")[0].strip()
+    # Try different LinkedIn title formats:
+    # 1. "Job Title - Company Name | LinkedIn"
+    # 2. "Software Engineer at Google | LinkedIn"
+    if " - " in title:
+        company = title.split(" - ")[1].split(" | ")[0].strip()
+    elif " at " in title:
+        company = title.split(" at ")[1].split(" | ")[0].strip()
+    elif " hiring " in title:
+        company = title.split(" hiring ")[0].strip()
 
     text = f"{title} {snippet}".lower()
 
@@ -71,16 +77,15 @@ def build_query(
     work_mode: str = "All"
 ) -> str:
 
-    default_roles = ["Software Engineer", "Developer", "Data Analyst"]
-    default_companies = ["Google", "Microsoft", "Amazon", "Infosys", "TCS"]
+    query = 'site:linkedin.com/jobs/view'
 
-    role_list = roles if roles else default_roles
-    company_list = companies if companies else default_companies
+    if roles:
+        role_str = " OR ".join(f'"{r}"' for r in roles)
+        query += f' ({role_str})'
 
-    role_str = " OR ".join(f'"{r}"' for r in role_list)
-    company_str = " OR ".join(f'"{c}"' for c in company_list)
-
-    query = f'site:linkedin.com/jobs/view ({role_str}) ({company_str})'
+    if companies:
+        company_str = " OR ".join(f'"{c}"' for c in companies)
+        query += f' ({company_str})'
 
     if location and location != "All":
         query += f' "{location}"'
@@ -176,14 +181,17 @@ def filter_jobs(
     result = jobs
 
     if location and location != "All":
-        result = [j for j in result if location.lower() in j["Location"].lower()]
+        # Allow "Unknown" location because the query already includes the location
+        result = [j for j in result if location.lower() in j["Location"].lower() or j["Location"] == "Unknown"]
 
     if work_mode and work_mode != "All":
+        # Allow "Unknown" mode
         result = [j for j in result if j["Mode"] == work_mode or j["Mode"] == "Unknown"]
 
     if company_filter:
         cf_lower = [c.lower() for c in company_filter]
-        result = [j for j in result if any(c in j["Company"].lower() for c in cf_lower)]
+        # Allow "Unknown" company
+        result = [j for j in result if any(c in j["Company"].lower() for c in cf_lower) or j["Company"] == "Unknown"]
 
     return result
 
