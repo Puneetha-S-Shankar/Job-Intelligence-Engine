@@ -11,7 +11,8 @@ const ALLOWED_ORIGINS = [
   "http://localhost:3000",
   "http://localhost:5500",
   "http://127.0.0.1:5500",
-  process.env.FRONTEND_URL  // set this in Render dashboard e.g. https://your-app.vercel.app
+  "https://job-intelligence-engine.vercel.app",
+  process.env.FRONTEND_URL
 ].filter(Boolean);
 
 app.use(cors({
@@ -22,7 +23,10 @@ app.use(cors({
     } else {
       callback(new Error("Not allowed by CORS"));
     }
-  }
+  },
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true
 }));
 
 app.use(express.json());
